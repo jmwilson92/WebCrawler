@@ -7,20 +7,20 @@ and gives the user the most relevant five responses ranked in order.
 
 from bs4 import BeautifulSoup
 import urllib.request
+import urllib.parse
 def user_input():
-    adder = "https://www.google.com/search?q="
     search = input("What would you like to search for?: ")
-    if ' ' in search:
-        print ('Please only use one word')
-        user_input()
-    else:
-        req = urllib.request.Request("https://www.google.com/search?q=" + search, headers={'User-Agent':'Magic Browser'})
-        goog_html = urllib.request.urlopen(req)
-        soup = BeautifulSoup(goog_html, features='lxml')
-        for link in soup.find_all('a'):
-            if search in link['href']:
-                print(adder + link.get('href'))
+    quoted = urllib.parse.quote(search)
+    print (quoted)
+    req = urllib.request.Request("https://www.google.com/search?q=" + quoted, headers={'User-Agent':'Magic Browser'})
+    goog_html = urllib.request.urlopen(req)
+    print (goog_html.read())
+    soup = BeautifulSoup(goog_html.read(), features='lxml')
+    for link in soup.find_all('a'):
+        if search in link['href']:
+            print (link.get('href'))
 
 user_input()
+
 
 
