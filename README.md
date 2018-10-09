@@ -1,5 +1,3 @@
-# WebCrawler
-#This crawls through search engines and retrieves relevant links based on user's input
 """
 This program is intended to allow the user to search through
 multiple search engines. It takes the user input and then
@@ -10,6 +8,7 @@ and gives the user the most relevant five responses ranked in order.
 from bs4 import BeautifulSoup
 import urllib.request
 def user_input():
+    adder = "https://www.google.com/search?q="
     search = input("What would you like to search for?: ")
     if ' ' in search:
         print ('Please only use one word')
@@ -20,5 +19,8 @@ def user_input():
         soup = BeautifulSoup(goog_html, features='lxml')
         for link in soup.find_all('a'):
             if search in link['href']:
-                print(link)
+                print(adder + link.get('href'))
+
 user_input()
+
+
