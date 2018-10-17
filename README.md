@@ -1,26 +1,36 @@
 """
-This program is intended to allow the user to search through
-multiple search engines. It takes the user input and then
-compares it with searches from multiple search engines at once
-and gives the user the most relevant five responses ranked in order.
+Search informational webpages to see what the most common words
+are in order of their occurrence
 """
 
 from bs4 import BeautifulSoup
 import urllib.request
 import urllib.parse
-def user_input():
-    search = input("What would you like to search for?: ")
-    quoted = urllib.parse.quote(search)
-    print (quoted)
-    req = urllib.request.Request("https://www.google.com/search?q=" + quoted, headers={'User-Agent':'Magic Browser'})
-    goog_html = urllib.request.urlopen(req)
-    print (goog_html.read())
-    soup = BeautifulSoup(goog_html.read(), features='lxml')
-    for link in soup.find_all('a'):
-        if search in link['href']:
-            print (link.get('href'))
+from collections import Counter
+from string import punctuation
 
-user_input()
+
+def web_search():
+    websearch = input("Enter a website to find out what the theme is? ")
+    try:
+        response = urllib.request.Request(websearch)
+    except:
+        print ("Was not a valid website")
+        web_search()
+    goog_req = urllib.request.Request(websearch)
+    goog_html = urllib.request.urlopen(goog_req).read()
+    soup = BeautifulSoup(goog_html, "lxml")
+    text = (''.join(s.findAll(text=True))for s in soup.findAll('p'))
+    c = Counter((x.rstrip(punctuation).lower() for y in text for x in y.split()))
+    final_c = ([x for x in c if c.get(x) > 5])
+    print (final_c)
+    web_search()
+            
+    
+web_search()
+        
+               
+
 
 
 
