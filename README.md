@@ -20,10 +20,12 @@ def user_input():
     goog_list = []
     relevant_list =[]
     superrelevant_list = []
-    search = input("What would you like to search for?: ")
+    search = input("What would you like get hashtags for?: ")
+        
     quoted = urllib.parse.quote(search)
     req = urllib.request.Request("https://www.google.com/search?q=" + quoted, headers={'User-Agent':'Magic Browser'})
     goog_html = urllib.request.urlopen(req)
+    print("Getting Links")
     sleep(2)
     soup = BeautifulSoup(goog_html, features='lxml')
     for links in soup.find_all('a'):
@@ -37,6 +39,7 @@ def user_input():
             newsearch = "http://www.google.com" + glinkers
             superrelevant_list.append(newsearch)
     superrelevant_list.pop(0)
+    print("Validating Websites, please wait a few minutes")
     for linkers in superrelevant_list:
         try:
             response = urllib.request.Request(linkers)
@@ -50,29 +53,17 @@ def user_input():
         soup = BeautifulSoup(sec_html, "lxml")
         text = (''.join(s.findAll(text=True))for s in soup.find_all('p'))
         c = Counter((x.rstrip(punctuation).lower() for y in text for x in y.split()))
-        final_c = c.most_common()
-    print(final_c)
-           
-    
-    
-    
+        final_c = ([x for x in c if c.get(x) > 3]) # words appearing more than 5 times 
+        nltk_words = list(stopwords.words('english'))
+        for i in final_c[:]:
+            if i in nltk_words:
+                final_c.remove(i)
+        hashtag_list = []
+        for s in final_c[:]:
+            s = ' #' + s
+            hashtag_list.append(s)
+            final_list = ' '.join(hashtag_list)
+    print("Your results are on their way!")
+    sleep(2)
+    print(final_list)     
 user_input()
-
-
-
-
-
-    
-        
-
-
-
-        
-        
-  
-
-
-
-
-
-
